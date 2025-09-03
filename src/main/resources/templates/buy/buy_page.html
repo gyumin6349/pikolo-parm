@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>캐릭터 거래</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+	rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+<style>
+@charset "UTF-8";
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: #f5f5f5;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	padding: 20px;
+}
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.header {
+	margin-bottom: 2rem;
+}
+
+.header h1 {
+	color: #007bff;
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin-bottom: 1rem;
+}
+
+.section-title {
+	color: #333;
+	font-size: 1.3rem;
+	font-weight: 600;
+	margin-bottom: 1.5rem;
+	border-bottom: 1px solid #e0e0e0;
+	padding-bottom: 0.5rem;
+}
+
+.filter-tabs {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 1.5rem;
+	flex-wrap: wrap;
+}
+
+.tab {
+	padding: 0.5rem 1rem;
+	border: 1px solid #e0e0e0;
+	background: white;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.9rem;
+	transition: all 0.2s ease;
+}
+
+.tab.active {
+	background: #007bff;
+	color: white;
+	border-color: #007bff;
+}
+
+.tab:hover {
+	border-color: #007bff;
+}
+
+.games-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	gap: 1rem;
+}
+
+.game-card {
+	background: white;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	overflow: hidden;
+	transition: all 0.2s ease;
+	cursor: pointer;
+}
+
+.game-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	border-color: #007bff;
+}
+
+.game-image {
+	width: 100%;
+	height: 140px;
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 2rem;
+}
+
+.fc-online {
+	background: linear-gradient(135deg, #1e3c72, #2a5298);
+	color: white;
+}
+
+.lol {
+	background: linear-gradient(135deg, #c9aa71, #b8935a);
+	color: white;
+}
+
+.maple {
+	background: linear-gradient(135deg, #ff6b6b, #ff5252);
+	color: white;
+}
+
+.baseball {
+	background: linear-gradient(135deg, #4dabf7, #339af0);
+	color: white;
+}
+
+.game-image::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(135deg, rgba(0, 0, 0, 0.1),
+		rgba(255, 255, 255, 0.1));
+}
+
+.game-logo {
+	position: relative;
+	z-index: 2;
+	font-weight: bold;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.game-name {
+	padding: 0.75rem;
+	text-align: center;
+	font-weight: 500;
+	color: #333;
+	font-size: 0.95rem;
+}
+
+.activity-list {
+	padding: 1rem 1.5rem;
+}
+
+.activity-item {
+	padding: 0.75rem 0;
+	border-bottom: 1px solid #f0f0f0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.activity-item:last-child {
+	border-bottom: none;
+}
+
+.game-tag {
+	background: #e9ecef;
+	color: #495057;
+	padding: 0.25rem 0.6rem;
+	border-radius: 4px;
+	font-size: 0.8rem;
+	font-weight: 500;
+}
+
+.time {
+	color: #6c757d;
+	font-size: 0.85rem;
+}
+
+@media ( max-width : 768px) {
+	.games-grid {
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	}
+}
+</style>
+</head>
+<body>
+	<div th:replace="fragments/navbar :: navbar"></div>
+
+	<div class="container">
+		<div class="header">
+			<h1>- 캐릭터 거래</h1>
+		</div>
+
+		<div class="section-title">캐릭터 거래 게임 리스트</div>
+
+		<div class="filter-tabs">
+			<div class="tab active">전체</div>
+			<div class="tab">ㄱ</div>
+			<div class="tab">ㄴ</div>
+			<div class="tab">ㄷ</div>
+			<div class="tab">ㄹ</div>
+			<div class="tab">ㅁ</div>
+			<div class="tab">ㅂ</div>
+			<div class="tab">ㅅ</div>
+			<div class="tab">ㅇ</div>
+			<div class="tab">ㅈ</div>
+			<div class="tab">ㅊ</div>
+			<div class="tab">ㅋ</div>
+			<div class="tab">ㅌ</div>
+			<div class="tab">ㅍ</div>
+			<div class="tab">ㅎ</div>
+			<div class="tab">1~A</div>
+		</div>
+
+		<div class="games-grid" id="gamesGrid">
+			<!-- 게임들이 여기에 렌더링됩니다 -->
+		</div>
+
+		<!--         <div class="stats-bar"> -->
+		<!--             <div class="stat-item"> -->
+		<!--                 <div class="stat-number" id="totalGames">4</div> -->
+		<!--                 <div class="stat-label">등록된 게임</div> -->
+		<!--             </div> -->
+		<!--             <div class="stat-item"> -->
+		<!--                 <div class="stat-number" id="todayAccess">0</div> -->
+		<!--                 <div class="stat-label">오늘 접속</div> -->
+		<!--             </div> -->
+		<!--             <div class="stat-item"> -->
+		<!--                 <div class="stat-number" id="popularGame">-</div> -->
+		<!--                 <div class="stat-label">인기 게임</div> -->
+		<!--             </div> -->
+		<!--         </div> -->
+
+		<!--         <div class="recent-section"> -->
+		<!--             <div class="section-header"> -->
+		<!--                 최근 접속 게임 -->
+		<!--             </div> -->
+		<!--             <div class="activity-list" id="activityList"> -->
+		<!--                 <div style="text-align: center; color: #666; padding: 2rem;"> -->
+		<!--                     아직 접속한 게임이 없습니다. -->
+		<!--                 </div> -->
+		<!--             </div> -->
+		<!--         </div> -->
+	</div>
+
+	<script>
+        // 게임 데이터베이스
+        let gameDatabase = [
+            {
+                id: 1,
+                name: 'FC온라인',
+                nameKor: 'FC온라인',
+                clicks: 0,
+                lastAccessed: null,
+                category: 'ㅇ'
+            },
+            {
+                id: 2,
+                name: '리그오브레전드',
+                nameKor: '리그오브레전드',
+                clicks: 0,
+                lastAccessed: null,
+                category: 'ㄹ'
+            },
+            {
+                id: 3,
+                name: '메이플스토리',
+                nameKor: '메이플스토리',
+                clicks: 0,
+                lastAccessed: null,
+                category: 'ㅁ'
+            },
+            {
+                id: 4,
+                name: '컴투스프로야구v25',
+                nameKor: '컴투스프로야구v25',
+                clicks: 0,
+                lastAccessed: null,
+                category: 'ㅋ'
+            }
+        ];
+
+        let activeFilter = '전체';
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            renderGames();
+            setupFilterTabs();
+        });
+
+        // 게임 목록 렌더링
+        function renderGames() {
+            const gamesGrid = document.getElementById('gamesGrid');
+            
+            let filteredGames = gameDatabase;
+            if (activeFilter !== '전체') {
+                filteredGames = gameDatabase.filter(game => game.category === activeFilter);
+            }
+            
+            gamesGrid.innerHTML = filteredGames.map(game => `
+                <div class="game-card" onclick="accessGame(${game.id})">
+                    <div class="game-image ${getGameClass(game.name)}">
+                        <div class="game-logo">${getGameLogo(game.name)}</div>
+                    </div>
+                    <div class="game-name">${game.nameKor}</div>
+                </div>
+            `).join('');
+        }
+
+        // 게임별 클래스 반환
+        function getGameClass(gameName) {
+            switch(gameName) {
+                case 'FC온라인': return 'fc-online';
+                case '리그오브레전드': return 'lol';
+                case '메이플스토리': return 'maple';
+                case '컴투스프로야구v25': return 'baseball';
+                default: return 'fc-online';
+            }
+        }
+
+        // 게임별 로고 반환
+        function getGameLogo(gameName) {
+            switch(gameName) {
+                case 'FC온라인': return 'FC';
+                case '리그오브레전드': return 'LoL';
+                case '메이플스토리': return 'Maple';
+                case '컴투스프로야구v25': return 'BASEBALL';
+                default: return 'GAME';
+            }
+        }
+
+        // 필터 탭 설정
+        function setupFilterTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 활성 탭 변경
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    activeFilter = this.textContent;
+                    renderGames();
+                });
+            });
+        }
+
+        // 게임 접속
+        function accessGame(gameId) {
+            const game = gameDatabase.find(g => g.id === gameId);
+            if (!game) return;
+
+            // 클릭 수 증가
+            game.clicks++;
+            game.lastAccessed = new Date();
+
+
+            // 최근 활동은 최대 5개까지만 유지
+            if (recentActivities.length > 5) {
+                recentActivities = recentActivities.slice(0, 5);
+            }
+
+
+        }
+
+       
+
+        // 알림 표시
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #007bff;
+                color: white;
+                padding: 0.75rem 1.25rem;
+                border-radius: 6px;
+                box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+                z-index: 1000;
+                font-weight: 500;
+                font-size: 0.9rem;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2500);
+        }
+
+        // CSS 애니메이션 추가
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 데이터베이스 관리 객체
+        window.gameDB = {
+            getAll: () => gameDatabase,
+            getById: (id) => gameDatabase.find(g => g.id === id),
+            getByCategory: (category) => gameDatabase.filter(g => g.category === category),
+            addGame: (gameData) => {
+                const newGame = {
+                    id: Math.max(...gameDatabase.map(g => g.id), 0) + 1,
+                    ...gameData,
+                    clicks: 0,
+                    lastAccessed: null
+                };
+                gameDatabase.push(newGame);
+                renderGames();
+                updateStats();
+                return newGame;
+            },
+            removeGame: (id) => {
+                gameDatabase = gameDatabase.filter(g => g.id !== id);
+                renderGames();
+                updateStats();
+            },
+            getStats: () => ({
+                totalGames: gameDatabase.length,
+                totalAccess: gameDatabase.reduce((sum, game) => sum + game.clicks, 0),
+                mostPopular: gameDatabase.reduce((prev, current) => 
+                    (prev.clicks > current.clicks) ? prev : current
+                ),
+                recentActivities: recentActivities
+            })
+        };
+
+        console.log('🎮 게임 데이터베이스가 로드되었습니다!');
+    </script>
+</body>
+</html>

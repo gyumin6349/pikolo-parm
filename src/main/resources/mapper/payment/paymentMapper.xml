@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="pikolo.payment.PaymentMapper">
+  
+   <!-- READY 생성 -->
+  <insert id="insertReady">
+    INSERT INTO PAYMENT (
+      user_id, provider, partner_order_id, partner_user_id,
+      amount_krw, status, note
+    ) VALUES (
+      #{userId}, #{provider}, #{partnerOrderId}, #{partnerUserId},
+      #{amountKrw}, 'READY', #{note}
+    )
+  </insert>
+
+  <!-- TID 저장 -->
+  <update id="updateTid">
+    UPDATE PAYMENT SET tid = #{tid}
+     WHERE partner_order_id = #{orderId}
+  </update>
+
+  <!-- 승인 전 잠금 조회 -->
+  <select id="findByOrderIdForUpdate" resultType="PaymentDTO">
+    SELECT * FROM PAYMENT
+     WHERE partner_order_id = #{orderId}
+     FOR UPDATE
+  </select>
+
+  <!-- 승인 완료 -->
+  <update id="markApproved">
+    UPDATE PAYMENT
+       SET status = 'APPROVED',
+           approved_at = SYSTIMESTAMP
+     WHERE partner_order_id = #{orderId}
+  </update>
+
+  <!-- 상태 변경 (취소/실패) -->
+  <update id="markStatus">
+    UPDATE PAYMENT SET status = #{status}
+     WHERE partner_order_id = #{orderId}
+  </update>
+  
+  <!-- PaymentMapper.xml -->
+<select id="findBalance" parameterType="long" resultType="long">
+  SELECT current_balance
+    FROM WALLET
+   WHERE user_id = #{userSeq}
+</select>
+
+<select id="findWallet" resultType="WalletDTO">
+    SELECT user_id AS userSeq,
+           current_balance AS currentBalance,
+           last_updated AS lastUpdated
+    FROM WALLET
+    WHERE user_id = #{userSeq}
+  </select>
+
+  <!-- 지갑 새로 생성 -->
+  <insert id="insertWallet">
+    INSERT INTO WALLET (user_id, current_balance, last_updated)
+    VALUES (#{userSeq}, #{amount}, SYSTIMESTAMP)
+  </insert>
+
+  <!-- 잔액 충전 -->
+  <update id="updateWalletBalance">
+    UPDATE WALLET
+       SET current_balance = current_balance + #{amount},
+           last_updated = SYSTIMESTAMP
+     WHERE user_id = #{userSeq}
+  </update>
+  
+  
+  </mapper>

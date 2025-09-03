@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<nav class="navbar navbar-expand-lg sticky-top" th:fragment="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-exchange-alt me-2"></i>Pikolo
+        </a>
+
+        <div class="navbar-nav ms-auto d-flex flex-row gap-3">
+            <a class="nav-link" href="/sell/list">판매목록</a>
+            <a class="nav-link" href="/buy/list">구매</a>
+            <a class="nav-link" href="/community">커뮤니티</a>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 ms-3">
+            <div th:if="${userId != null}" class="d-flex align-items-center gap-3">
+                <span class="text-muted">
+                    <strong th:text="${userId}">사용자</strong>님
+                </span>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        메뉴
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/user/mypage"><i class="fas fa-user me-2"></i>마이페이지</a></li>
+                        <li><a class="dropdown-item" href="/wallet/myWallet"><i class="fas fa-coins me-2"></i>마일리지</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/login/logout}" method="post" class="m-0">
+                                <button class="dropdown-item" type="submit">
+                                    <i class="fas fa-sign-out-alt me-2"></i>로그아웃
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div th:if="${userId == null}" class="d-flex gap-2">
+                <a class="btn btn-outline-primary btn-sm" href="/login/login_frm">로그인</a>
+                <a class="btn btn-primary btn-sm" href="/user/signup">회원가입</a>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

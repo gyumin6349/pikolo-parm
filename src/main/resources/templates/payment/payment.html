@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마일리지 충전</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <style>
+    body{background:#f5f7fb}
+    .section-title{font-weight:800;font-size:1.2rem;margin:8px 0 14px}
+    .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem}
+    .method{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:18px;cursor:pointer;transition:.12s}
+    .method:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    .method.active{outline:2px solid #2563eb;box-shadow:0 6px 18px rgba(37,99,235,.18)}
+    .badge-off{position:absolute;left:10px;top:10px;background:#ef4444;color:#fff;border-radius:6px;padding:2px 6px;font-size:.75rem;font-weight:700}
+    .method .name{font-weight:800;font-size:1.05rem}
+    .method .sub{color:#6b7280;font-size:.9rem}
+    .card-lite{background:#fff;border:1px solid #e5e7eb;border-radius:10px}
+    .amount-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
+    .amount-btn{border:1px solid #e5e7eb;background:#fff;border-radius:10px;padding:16px;font-weight:800}
+    .amount-btn.active, .amount-btn:hover{border-color:#2563eb;background:#f0f6ff}
+    .summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e5e7eb}
+    .summary-row:last-child{border-bottom:0}
+    .btn-primary{border-radius:10px;padding:14px;font-weight:800}
+    @media (max-width:992px){.grid{grid-template-columns:repeat(3,1fr)}.amount-grid{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:576px){.grid{grid-template-columns:repeat(2,1fr)}.amount-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container py-3">
+
+  <div class="section-title">- 마일리지 충전</div>
+
+  <!-- 충전수단 선택 (UI는 남겨두지만 실제 동작은 카카오페이로만 감) -->
+  <div class="card-lite p-3 mb-3">
+    <div class="fw-bold text-primary text-center mb-2">충전수단 선택</div>
+    <div id="methodGrid" class="grid">
+
+      <div class="method position-relative" data-code="ACCOUNT" data-discount="0.01">
+        <span class="badge-off">1% 할인</span>
+        <div class="name">충전전용계좌</div>
+        <div class="sub">입금 후 자동 충전</div>
+      </div>
+
+      <div class="method" data-code="FAST_BANK"><div class="name">퀵계좌이체</div><div class="sub">토스페이먼츠</div></div>
+      <div class="method" data-code="IDPAY"><div class="name">아이디팜페이</div><div class="sub">간편결제</div></div>
+      <div class="method" data-code="CARD"><div class="name">신용/체크카드</div><div class="sub">국내 전 카드사</div></div>
+      <div class="method active" data-code="KAKAOPAY"><div class="name">카카오페이</div><div class="sub">kakao pay</div></div>
+      <div class="method" data-code="PAYCO"><div class="name">페이코</div><div class="sub">PAYCO</div></div>
+      <div class="method" data-code="SAMSUNG"><div class="name">삼성페이</div><div class="sub">Samsung Pay</div></div>
+      <div class="method" data-code="PHONE"><div class="name">휴대폰</div><div class="sub">모바일 결제</div></div>
+      <div class="method" data-code="GIFT"><div class="name">상품권</div><div class="sub">핀번호 입력</div></div>
+      <div class="method" data-code="TMONEY"><div class="name">티머니</div><div class="sub">Tmoney</div></div>
+      <div class="method" data-code="POINT"><div class="name">통합포인트</div><div class="sub">모바일 포인트</div></div>
+
+    </div>
+    <div class="small text-danger mt-2">※ 현재 페이지는 학습용으로 모든 결제가 카카오페이로 진행됩니다.</div>
+  </div>
+
+  <!-- 금액 선택 -->
+  <div class="card-lite p-3 mb-3">
+    <div class="fw-bold mb-2">충전 금액 선택 <span class="text-secondary small">이외의 금액은 아래에 직접 입력</span></div>
+    <div class="amount-grid mb-3" id="presetGrid">
+      <button type="button" class="amount-btn" data-amount="5000">5,000원</button>
+      <button type="button" class="amount-btn" data-amount="10000">10,000원</button>
+      <button type="button" class="amount-btn" data-amount="30000">30,000원</button>
+      <button type="button" class="amount-btn" data-amount="50000">50,000원</button>
+      <button type="button" class="amount-btn" data-amount="100000">100,000원</button>
+      <button type="button" class="amount-btn" data-amount="200000">200,000원</button>
+      <button type="button" class="amount-btn" data-amount="300000">300,000원</button>
+      <button type="button" class="amount-btn" data-amount="500000">500,000원</button>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-text">충전신청금액(직접입력)</span>
+      <input type="number" min="1500" step="500" id="amountInput" class="form-control" placeholder="금액을 최소 1,500원 이상 입력하세요">
+      <span class="input-group-text">원</span>
+    </div>
+    <div class="small text-secondary mt-1">입금 수수료: 1,000원 (50,000원 이상 충전 시 0원) · 최소 충전 1,500원</div>
+  </div>
+
+  <!-- 요약/확인 -->
+  <div class="card-lite p-3 mb-3">
+    <div class="fw-bold mb-2">마일리지 확인 후 결제</div>
+    <div class="summary-row"><span>보유중인 마일리지</span><strong id="currentM">1,000원</strong></div>
+    <div class="summary-row"><span>충전 금액</span><strong id="sumAmount">0원</strong></div>
+    <div class="summary-row"><span>할인(전용계좌 1%)</span><strong id="discount">0원</strong></div>
+    <div class="summary-row"><span>수수료</span><strong id="fee">0원</strong></div>
+    <div class="summary-row"><span>결제 금액(실제 지불)</span><strong id="payable">0원</strong></div>
+    <div class="summary-row"><span>충전 후 마일리지</span><strong id="afterM">1,000원</strong></div>
+  </div>
+
+  <!-- 카카오페이 직행 버튼 (form 제거) -->
+  <button class="btn btn-primary w-100" type="button" id="kakaoPayBtn">카카오페이로 결제</button>
+
+</div>
+
+<script>
+  const KRW = n => (n||0).toLocaleString('ko-KR') + '원';
+  let currentMileage = 1000; // TODO: 서버에서 주입
+  let selectedAmount = 0;
+
+  // 수단 그리드 클릭(학습용: UI만, 실제 동작은 카카오 고정)
+  document.querySelectorAll('.method').forEach(m=>{
+    m.addEventListener('click', ()=>{
+      document.querySelectorAll('.method').forEach(x=>x.classList.remove('active'));
+      m.classList.add('active');
+    });
+  });
+
+  // 프리셋 버튼
+  document.querySelectorAll('.amount-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.amount-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      selectedAmount = parseInt(b.dataset.amount,10);
+      document.getElementById('amountInput').value = selectedAmount;
+      recalc();
+    });
+  });
+
+  // 직접 입력
+  document.getElementById('amountInput').addEventListener('input', e=>{
+    document.querySelectorAll('.amount-btn').forEach(x=>x.classList.remove('active'));
+    selectedAmount = parseInt(e.target.value||0,10);
+    recalc();
+  });
+
+  function recalc(){
+    const amt = isNaN(selectedAmount) ? 0 : selectedAmount;
+    if (amt>0 && amt<1500){ document.getElementById('sumAmount').textContent='1,500원 이상'; return; }
+
+    const discount = Math.floor( amt * 0.01 ); // 전용계좌 1% 안내용(실제 결제는 카카오)
+    const fee = amt>=50000 ? 0 : (amt>0 ? 1000 : 0);
+    const payable = Math.max(0, amt - discount + fee);
+    const after = currentMileage + amt;
+
+    document.getElementById('sumAmount').textContent = KRW(amt);
+    document.getElementById('discount').textContent = '-' + KRW(discount);
+    document.getElementById('fee').textContent = KRW(fee);
+    document.getElementById('payable').textContent = KRW(payable);
+    document.getElementById('currentM').textContent = KRW(currentMileage);
+    document.getElementById('afterM').textContent = KRW(after);
+  }
+  recalc();
+
+  // KakaoPay ready 호출
+  async function kakaoReady(amount, itemName){
+	  const res = await fetch('/api/pay/kakao/ready', {   // ✅ /ready 로 호출
+		  method: 'POST',
+		  headers: { 'Content-Type': 'application/json' },
+		  credentials: 'include',
+		  body: JSON.stringify({ amountKrw: selectedAmount, itemName: '마일리지 충전' })
+		});
+		const { redirectUrl } = await res.json();
+		location.href = redirectUrl; // 카카오 결제창으로 이동
+  }
+
+  // 버튼 클릭 시 무조건 카카오페이로 직행
+  document.getElementById('kakaoPayBtn').addEventListener('click', async ()=>{
+    if (!selectedAmount || selectedAmount < 1500){
+      alert('최소 1,500원 이상 입력/선택하세요.');
+      return;
+    }
+    const btn = document.getElementById('kakaoPayBtn');
+    const old = btn.textContent; btn.disabled = true; btn.textContent = '결제창 이동 중...';
+
+    try {
+      const { redirectUrl } = await kakaoReady(selectedAmount, '마일리지 충전');
+      window.location.href = redirectUrl; // ✅ 카카오 결제창으로 이동
+    } catch (e) {
+      alert('카카오페이 결제 준비 실패\n' + e.message);
+      btn.disabled = false; btn.textContent = old;
+    }
+  });
+</script>
+</body>
+</html>

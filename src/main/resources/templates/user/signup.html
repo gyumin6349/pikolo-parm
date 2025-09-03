@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>회원가입</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<style>
+body {
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #f8f9fa
+}
+
+.signup-container {
+	width: 520px
+}
+</style>
+</head>
+<body>
+	<div class="signup-container">
+		<h2 class="mb-4 text-center">회원가입</h2>
+
+		<form th:action="@{/user/userSignUp}" method="post" id="signupForm"
+			class="border p-4 rounded bg-light needs-validation" novalidate>
+			<input type="hidden" th:name="${_csrf?.parameterName}"
+				th:value="${_csrf?.token}" />
+
+			<!-- 아이디 -->
+			<div class="mb-3">
+				<label for="userId" class="form-label">아이디</label>
+				<div class="input-group">
+					<input type="text" id="userId" name="userId" class="form-control"
+						required minlength="4" maxlength="30" pattern="[a-zA-Z0-9_]{4,30}"
+						placeholder="영문/숫자/언더스코어, 4~30자">
+					<button type="button" class="btn btn-outline-secondary"
+						id="btnCheckId">중복 검사</button>
+				</div>
+				<div class="form-text">영문/숫자/언더스코어만 사용</div>
+				<div class="invalid-feedback">아이디 형식을 확인하세요.</div>
+				<div id="idCheckMsg" class="small mt-1"></div>
+			</div>
+
+			<!-- 비밀번호 -->
+			<div class="mb-3">
+				<label for="password" class="form-label">비밀번호</label>
+				<div class="input-group">
+					<input type="password" id="password" name="password"
+						class="form-control" required minlength="8"
+						placeholder="8자 이상 (권장: 영문/숫자/특수문자 조합)">
+					<button type="button" class="btn btn-outline-secondary"
+						onclick="togglePassword('password', this)">👁</button>
+				</div>
+				<div class="invalid-feedback">비밀번호를 8자 이상 입력하세요.</div>
+			</div>
+
+			<!-- 비밀번호 재확인 -->
+			<div class="mb-3">
+				<label for="password2" class="form-label">비밀번호 재확인</label>
+				<div class="input-group">
+					<input type="password" id="password2" class="form-control" required>
+					<button type="button" class="btn btn-outline-secondary"
+						onclick="togglePassword('password2', this)">👁</button>
+				</div>
+				<div id="pwHelp" class="invalid-feedback">비밀번호가 서로 다릅니다.</div>
+			</div>
+
+			<!-- 이름 -->
+			<div class="mb-3">
+				<label for="userName" class="form-label">이름</label> <input
+					type="text" id="userName" name="userName" class="form-control"
+					required>
+				<div class="invalid-feedback">이름을 입력하세요.</div>
+			</div>
+
+			<!-- 이메일(선택) -->
+			<div class="mb-3">
+				<label for="userEmail" class="form-label">이메일(선택)</label> <input
+					type="email" id="userEmail" name="userEmail" class="form-control"
+					placeholder="name@example.com">
+				<div class="invalid-feedback">이메일 형식을 확인하세요.</div>
+			</div>
+
+			<!-- 휴대폰(선택) -->
+			<div class="mb-3">
+				<label for="userPhone" class="form-label">휴대폰 번호(선택)</label> <input
+					type="text" id="userPhone" name="userPhone" class="form-control"
+					placeholder="010-1234-5678" inputmode="numeric" maxlength="13">
+				<div class="form-text">숫자만 입력하면 자동으로 하이픈이 들어갑니다.</div>
+			</div>
+
+			<!-- 생년월일(선택) -->
+			<div class="mb-3">
+				<label for="birthDate" class="form-label">생년월일(선택)</label> <input
+					type="date" id="birthDate" name="birthDate" class="form-control">
+				<div class="form-text">
+					선택 시 표시: <span id="birthPreview">-</span>
+				</div>
+			</div>
+
+			<!-- 주소(필수: DB NOT NULL 대응) -->
+			<div class="mb-3">
+				<label for="userAddress" class="form-label">주소</label>
+				<div class="input-group">
+					<input type="text" id="userAddress" name="userAddress"
+						class="form-control" placeholder="주소" required>
+					<button type="button" class="btn btn-outline-secondary"
+						onclick="execDaumPostcode()">주소 검색</button>
+				</div>
+			</div>
+			<div class="mb-3">
+				<input type="text" id="detailAddress" name="detailAddress"
+					class="form-control" placeholder="상세 주소 입력">
+			</div>
+
+			<!-- 출금계좌(선택) -->
+			<div class="row g-2 mb-3">
+				<div class="col-4">
+					<label for="userBank" class="form-label">은행</label> <select
+						id="userBank" name="userBank" class="form-select">
+						<option value="">선택</option>
+						<option>국민</option>
+						<option>우리</option>
+						<option>신한</option>
+						<option>하나</option>
+						<option>농협</option>
+						<option>카카오뱅크</option>
+					</select>
+				</div>
+				<div class="col-8">
+					<label for="userBankAccount" class="form-label">계좌번호</label> <input
+						type="text" id="userBankAccount" name="userBankAccount"
+						class="form-control" placeholder="숫자만 입력">
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-success w-100">가입하기</button>
+		</form>
+	</div>
+
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+function execDaumPostcode(){
+	
+new daum.Postcode({
+    oncomplete: function(data) {
+		if(data.userSelectedType=='R'){
+			addr=data.roadAddress;
+		}else{
+			addr=data.jibunAddress;
+		}
+	    // 우편번호 + 기본주소 입력
+        document.getElementById("userAddress").value = "(" + data.zonecode + ") " + addr;
+
+        // 상세주소 칸으로 focus
+        document.getElementById("detailAddress").focus();
+    }
+}).open();
+}
+
+</script>
+
+
+	<script>
+  // 아이디 중복 검사(ajax 자리)
+  document.getElementById('btnCheckId')?.addEventListener('click', async ()=>{
+    const userId = document.getElementById('userId').value.trim();
+    const msg = document.getElementById('idCheckMsg');
+    if(!/^[a-zA-Z0-9_]{4,30}$/.test(userId)){
+      msg.textContent = '아이디 형식을 확인하세요.';
+      msg.className = 'small text-danger';
+      return;
+    }
+    try{
+      // const res = await fetch('/api/users/check-id?userId='+encodeURIComponent(userId));
+      // const {available} = await res.json();
+      const available = true; // <-- 서버 연동 전 임시
+      if(available){ msg.textContent='사용 가능한 아이디입니다.'; msg.className='small text-success'; }
+      else { msg.textContent='이미 사용 중인 아이디입니다.'; msg.className='small text-danger'; }
+    }catch(e){
+      msg.textContent='중복 검사 중 오류가 발생했습니다.'; msg.className='small text-danger';
+    }
+  });
+
+  // 비밀번호 표시 토글
+  function togglePassword(id, btn){
+    const el = document.getElementById(id);
+    const to = el.type === 'password' ? 'text' : 'password';
+    el.type = to; btn.textContent = (to==='text' ? '@' : '👁');
+  }
+
+  // 휴대폰 자동 하이픈
+  const phone = document.getElementById('userPhone');
+  phone?.addEventListener('input', ()=>{
+    let v = phone.value.replace(/\D/g,'').slice(0,11);
+    if(v.length>7) v = v.replace(/(\d{3})(\d{4})(\d{1,4})/,'$1-$2-$3');
+    else if(v.length>3) v = v.replace(/(\d{3})(\d{1,4})/,'$1-$2');
+    phone.value = v;
+  });
+
+  // 생일 프리뷰
+  const birth = document.getElementById('birthDate');
+  const birthPreview = document.getElementById('birthPreview');
+  birth?.addEventListener('change', ()=> {
+    birthPreview.textContent = birth.value ? birth.value.replaceAll('-', '.') : '-';
+  });
+
+
+
+  // 제출 검증
+  (function(){
+    const form = document.getElementById('signupForm');
+    const pw1 = document.getElementById('password');
+    const pw2 = document.getElementById('password2');
+
+    form.addEventListener('submit', (e)=>{
+      // HTML5 기본 검증
+      if(!form.checkValidity()){
+        e.preventDefault(); e.stopPropagation();
+      }
+      // 비밀번호 일치
+      if(pw1.value !== pw2.value){
+        e.preventDefault(); e.stopPropagation();
+        pw2.classList.add('is-invalid');
+        document.getElementById('pwHelp').style.display='block';
+      }else{
+        pw2.classList.remove('is-invalid');
+      }
+      form.classList.add('was-validated');
+    });
+  })();
+</script>
+</body>
+</html>

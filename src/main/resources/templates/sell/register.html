@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>아이디 판매 등록</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <!-- jQuery (필수) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap 5 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Summernote -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+  
+ <style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f5f5f5;
+  }
+
+  /* 컨테이너 여백 최소화 */
+  .container-fluid {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  /* 폼 전체 여백 축소 & 그리드 간격 축소 */
+  .compact-form .row{ --bs-gutter-x: .3rem; --bs-gutter-y: .3rem; }
+  .compact-form .mb-4{ margin-bottom: .5rem !important; }
+  .compact-form .mb-3{ margin-bottom: .4rem !important; }
+  .compact-form .mb-2{ margin-bottom: .3rem !important; }
+
+  /* 제목 여백 축소 */
+  h3 {
+    margin-bottom: 0.8rem !important;
+  }
+
+  /* 탭: 높이/간격 컴팩트, 메인톤 */
+  .category-tabs .nav-link{
+    padding: .5rem 0;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #fff;
+    color: #495057;
+    font-weight: 600;
+    transition: .12s ease;
+  }
+  .category-tabs .nav-link.active{
+    background:#007bff; color:#fff; border-color:#007bff;
+    box-shadow: 0 2px 8px rgba(0,123,255,.18);
+  }
+  .category-tabs {
+    margin-bottom: 0.8rem !important;
+  }
+
+  /* 카드: 패딩 축소 */
+  .card{ 
+    background:#fff; 
+    border:1px solid #e0e0e0; 
+    border-radius:6px; 
+    margin-bottom: 0.8rem;
+  }
+  .card .card-body{ padding: .7rem .8rem; }
+
+  /* 라벨/컨트롤: 높이·패딩 축소 */
+  .form-label{ 
+    font-weight:600; 
+    color:#333; 
+    margin-bottom:.2rem; 
+    font-size: 0.9rem;
+  }
+  .form-control, .form-select{
+    border:1px solid #e0e0e0; 
+    border-radius:6px;
+    padding:.35rem .5rem; 
+    height: calc(1.5em + .7rem);
+    font-size: 0.9rem;
+  }
+  .form-control:focus, .form-select:focus{
+    border-color:#007bff; box-shadow:0 0 0 .15rem rgba(0,123,255,.15);
+  }
+  .input-group-text{ 
+    background:#f8f9fa; 
+    border-color:#e0e0e0; 
+    padding:.35rem .5rem;
+    font-size: 0.9rem;
+  }
+
+  /* 정산 박스 */
+  .stat-box{
+    background:#f8f9fa; 
+    border:1px solid #e9ecef; 
+    border-radius:6px;
+    padding:.5rem .7rem;
+  }
+  .stat-box strong{ color:#007bff; }
+  .form-help{ font-size:.75rem; color:#6c757d; margin-top:.15rem; }
+
+  /* 에디터 */
+  .editor{
+    min-height:180px; 
+    border:1px solid #e0e0e0; 
+    border-radius:6px;
+    background:#fff; 
+    padding:.6rem .7rem;
+    font-size: 0.9rem;
+  }
+  .editor:focus{
+    outline:none; border-color:#007bff; box-shadow:0 0 0 .15rem rgba(0,123,255,.15);
+  }
+
+  /* 공지 */
+  .notice-box{
+    background:#edf3ff; 
+    border:1px solid #d7e3ff; 
+    border-radius:6px;
+    padding:.6rem .8rem;
+    margin-bottom: 0.8rem;
+  }
+  .notice-box h6{ 
+    font-weight:700; 
+    color:#007bff; 
+    margin-bottom:.2rem;
+    font-size: 0.95rem;
+  }
+  .notice-box li{ 
+    line-height:1.4; 
+    color:#374151; 
+    font-size: 0.8rem;
+    margin-bottom: 0.1rem;
+  }
+
+  /* 버튼 */
+  .btn-primary.btn-lg{
+    border:none; 
+    border-radius:6px; 
+    padding:.6rem .8rem; 
+    font-weight:700;
+    box-shadow:0 3px 8px rgba(0,123,255,.18);
+  }
+  .btn-primary.btn-lg:hover{ transform: translateY(-1px); }
+
+  /* 토글 */
+  .form-check-input:checked{ background-color:#007bff; border-color:#007bff; }
+
+  /* 폼 체크 여백 축소 */
+  .form-check {
+    margin-bottom: 0.3rem;
+  }
+
+  /* row 여백 축소 */
+  .row {
+    margin-bottom: 0.5rem;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="container-fluid compact-form">
+  <!-- 공통 네비가 있다면 -->
+  <div th:replace="fragments/navbar :: navbar"></div>
+
+  <h3 class="fw-bold">판매 등록</h3>
+
+  <!-- 게임명/서버 선택 -->
+  <form method="post" th:action="@{/sell/register}">
+    <!-- JWT 쓰는 구조면 CSRF 안 써도 되지만, Security가 켜져있다면 필요 -->
+    <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}"/>
+
+    <!-- 1) 카테고리 탭 -->
+    <ul class="nav nav-underline category-tabs row row-cols-4 g-1" role="tablist">
+      <li class="col nav-item"><button class="nav-link active w-100" data-bs-toggle="tab" type="button">계정</button></li>
+      <li class="col nav-item"><button class="nav-link w-100" data-bs-toggle="tab" type="button">게임머니</button></li>
+      <li class="col nav-item"><button class="nav-link w-100" data-bs-toggle="tab" type="button">아이템</button></li>
+      <li class="col nav-item"><button class="nav-link w-100" data-bs-toggle="tab" type="button">기타</button></li>
+    </ul>
+
+    <!-- 2) 게임/서버 -->
+    <div class="row g-1">
+      <div class="col-md-6">
+        <label class="form-label">게임명</label>
+        <input class="form-control" name="gameName" placeholder="예) 리그오브레전드" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">서버</label>
+        <input class="form-control" name="serverName" placeholder="예) KR / 서버전체" required>
+      </div>
+    </div>
+
+    <!-- 3) 가격/정산 -->
+    <div class="card">
+      <div class="card-body">
+        <div class="row g-2 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label">판매 가격(원)</label>
+            <div class="input-group">
+              <input type="number" min="500" step="100" class="form-control" name="price" id="price" placeholder="최소 500원" required>
+              <span class="input-group-text">원</span>
+            </div>
+            <div class="form-help">최소 500원 이상 입력</div>
+          </div>
+
+          <div class="col-md-8">
+            <div class="stat-box">
+              <div class="d-flex justify-content-between">
+                <div>총 판매예정</div>
+                <div><span id="expectedTotal">0</span> 원</div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <div>정산금액(수수료 차감 후)</div>
+                <div><strong id="payout">0</strong> 원</div>
+              </div>
+              <div class="form-help mt-1">수수료 5% 반영</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4) 충전 여부 -->
+<!--     <div class="card"> -->
+<!--       <div class="card-body"> -->
+<!--         <label class="form-label me-3">충전 여부</label> -->
+<!--         <div class="d-flex align-items-center gap-3 flex-wrap"> -->
+<!--           <div class="form-check form-check-inline"> -->
+<!--             <input class="form-check-input" type="radio" name="topupType" id="topupNone" value="NONE" checked> -->
+<!--             <label class="form-check-label" for="topupNone">충전불가</label> -->
+<!--           </div> -->
+<!--           <div class="form-check form-check-inline"> -->
+<!--             <input class="form-check-input" type="radio" name="topupType" id="topupAvailable" value="AVAILABLE"> -->
+<!--             <label class="form-check-label" for="topupAvailable">충전가능</label> -->
+<!--           </div> -->
+<!--           <div class="d-flex align-items-center gap-2"> -->
+<!--             <label class="form-label m-0" for="minTopup">최소 충전</label> -->
+<!--             <div class="input-group" style="width:150px;"> -->
+<!--               <input type="number" class="form-control" name="minTopup" id="minTopup" placeholder="금액" disabled> -->
+<!--               <span class="input-group-text">원</span> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+
+    <!-- 5) 계정 정보 -->
+    <div class="card">
+      <div class="card-body">
+        <div class="row g-1">
+          <div class="col-md-3">
+            <label class="form-label">직업</label>
+            <input class="form-control" name="jobWorld" placeholder="직업/서브월드">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">계정종류</label>
+            <select class="form-select" name="accountType">
+              <option value="">계정종류 선택</option>
+              <option value="NORMAL">일반</option>
+              <option value="PREMIUM">프리미엄</option>
+              <option value="EVENT">이벤트</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">구매경로</label>
+            <select class="form-select" name="purchasePath">
+              <option value="">구매경로 선택</option>
+              <option>공식</option>
+              <option>중고</option>
+              <option>기타</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">결제내역</label>
+            <select class="form-select" name="paymentHistory">
+              <option value="">결제내역 선택</option>
+              <option value="NONE">없음</option>
+              <option value="HAS_HISTORY">있음</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6) 제목 -->
+    <div class="mb-2">
+      <label class="form-label">제목</label>
+      <input class="form-control" name="title" placeholder="제목을 입력하세요" maxlength="80" required>
+    </div>
+
+    <!-- 7) 블라인드 여부 -->
+    <div class="form-check form-switch mb-2">
+      <input class="form-check-input" type="checkbox" id="blind" name="blind">
+      <label class="form-check-label" for="blind">
+        블라인드 처리 <span class="form-help ms-2">체크 시 거래 종료까지 제목/내용/금액/시간이 비공개</span>
+      </label>
+    </div>
+
+    <!-- 8) 상세설명 (간단 에디터 영역) -->
+    <div class="d-flex justify-content-between align-items-center mt-2">
+  <small class="text-muted">이미지 최대 <b>5</b>장</small>
+  <small class="text-muted"><span id="imgCount">0</span>/5</small>
+</div>
+<div id="imgPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+    <div class="mb-3">
+      <label class="form-label">상세설명</label>
+		  <textarea id="summernote" name="description"></textarea>
+  <div class="form-help mt-1">이미지 삽입 가능 (붙여넣기/드래그/업로드)</div>
+	      <div class="form-help mt-1">연락처나 외부 유도 문구는 제한될 수 있습니다.</div>
+    </div>
+
+    <!-- 9) 알림/주의 -->
+    <div class="notice-box">
+      <h6 class="mb-2"><i class="fa-solid fa-circle-exclamation me-2"></i>NOTICE</h6>
+      <ol class="mb-0 small">
+        <li>오픈카톡/계좌/연락처/타사이트 유도 문구는 삭제 처리될 수 있습니다.</li>
+        <li>물품 내용과 실물품이 다를 경우 구매자가 취소할 수 있습니다.</li>
+        <li>판매가 불가한 물품은 통보없이 삭제될 수 있습니다.</li>
+        <li>사진은 한 번에 12개, 최대 100장까지 업로드 가능합니다. (이미지 업로드는 별도 페이지에서 구현)</li>
+        <li>암호코드 요청은 사기일 수 있습니다. 전자계약서 신청 후 인수처리 바랍니다.</li>
+        <li>회원정보(휴대폰/이름/이메일)를 정확히 확인 후 이용해주세요.</li>
+      </ol>
+    </div>
+
+    <!-- 제출 -->
+    <div class="d-grid">
+      <button class="btn btn-primary btn-lg" type="submit">
+        물품 등록하기
+      </button>
+    </div>
+  </form>
+</div>
+<script>
+  // 업로드된 이미지 URL을 추적
+  const uploadedImages = new Set(); // 중복 방지
+  const LIMIT = 5;
+
+  const $count = document.getElementById('imgCount');
+  const $preview = document.getElementById('imgPreview');
+
+  function updateCounter(){
+    $count.textContent = uploadedImages.size;
+  }
+
+  function addThumb(url){
+    const wrap = document.createElement('div');
+    wrap.className = 'thumb';
+    wrap.dataset.url = url;
+
+    const img = document.createElement('img');
+    img.src = url;
+
+    const btn = document.createElement('button');
+    btn.className = 'remove';
+    btn.type = 'button';
+    btn.innerHTML = '×';
+    btn.onclick = () => removeImage(url);
+
+    wrap.appendChild(img);
+    wrap.appendChild(btn);
+    $preview.appendChild(wrap);
+  }
+
+  function removeThumb(url){
+    const el = $preview.querySelector(`.thumb[data-url="${CSS.escape(url)}"]`);
+    if(el) el.remove();
+  }
+
+  // 에디터에서 이미지 제거(본문 내 img 태그 삭제)
+  function removeImage(url){
+    // 1) 본문 이미지 삭제
+    const $editor = $('#summernote');
+    const $content = $('<div>').html($editor.summernote('code'));
+    $content.find(`img[src="${url}"]`).remove();
+    $editor.summernote('code', $content.html());
+
+    // 2) 미리보기/카운터 갱신
+    uploadedImages.delete(url);
+    removeThumb(url);
+    updateCounter();
+
+    // (선택) 서버에 불필요 파일 삭제 API 호출
+    // fetch('/upload/image/delete?url=' + encodeURIComponent(url), { method: 'DELETE' });
+  }
+
+  $('#summernote').summernote({
+    placeholder: '상세 설명을 입력하세요',
+    height: 300,
+    lang: 'ko-KR',
+    callbacks: {
+      onImageUpload: function(files) {
+        // 여러 개 드래그 시 개수 체크
+        const willAdd = Math.min(files.length, LIMIT - uploadedImages.size);
+        if (willAdd <= 0) {
+          alert('이미지는 최대 5장까지 업로드할 수 있습니다.');
+          return;
+        }
+        for (let i = 0; i < willAdd; i++) {
+          sendFile(files[i], this);
+        }
+        // 초과분 안내
+        if (files.length > willAdd) {
+          alert('최대 5장을 초과하여 업로드할 수 없습니다.');
+        }
+      },
+      // 에디터에서 직접 삭제(Backspace 등)된 경우에도 감지해서 카운터 싱크
+      onMediaDelete: function($target) {
+        const url = $target.attr('src');
+        if (uploadedImages.has(url)) {
+          uploadedImages.delete(url);
+          removeThumb(url);
+          updateCounter();
+        }
+      }
+    }
+  });
+
+  async function sendFile(file, editor) {
+    // 프론트 단일 파일 제한(선택): 용량/타입
+    if (!file.type.startsWith('image/')) { alert('이미지 파일만 업로드 가능합니다.'); return; }
+    if (file.size > 10 * 1024 * 1024) { alert('이미지 용량은 10MB 이하만 가능합니다.'); return; }
+
+    // 서버 전송
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch('/upload/image', { method: 'POST', body: formData });
+    if (!res.ok) { alert('이미지 업로드 실패'); return; }
+    const data = await res.json();
+    const url = data.url; // 서버가 반환하는 공개 URL
+
+    // 중복 삽입 방지 + 제한 확인
+    if (uploadedImages.size >= LIMIT) {
+      alert('이미지는 최대 5장까지 업로드할 수 있습니다.');
+      return;
+    }
+    if (!uploadedImages.has(url)) {
+      // 본문에 삽입
+      $(editor).summernote('insertImage', url);
+      // 미리보기 추가
+      uploadedImages.add(url);
+      addThumb(url);
+      updateCounter();
+    }
+  }
+
+  // 페이지 초기 로드 시(수정 화면) 본문 내 이미지 개수를 스캔해서 카운터 맞추고 썸네일 생성
+  document.addEventListener('DOMContentLoaded', () => {
+    const html = $('#summernote').summernote('code');
+    const tmp = document.createElement('div'); tmp.innerHTML = html;
+    tmp.querySelectorAll('img').forEach(img => {
+      const url = img.getAttribute('src');
+      if (url && !uploadedImages.has(url) && uploadedImages.size < LIMIT) {
+        uploadedImages.add(url);
+        addThumb(url);
+      }
+    });
+    updateCounter();
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // 가격 → 예상정산 자동계산 (예: 수수료 5%)
+  const priceEl = document.getElementById('price');
+  const expectedEl = document.getElementById('expectedTotal');
+  const payoutEl = document.getElementById('payout');
+
+  function recalc(){
+    const p = parseInt(priceEl.value || 0, 10);
+    const feeRate = 0.05; // 서버 수수료율과 반드시 일치!
+    const payout = Math.max(0, Math.round(p * (1 - feeRate)));
+    expectedEl.textContent = p.toLocaleString();
+    payoutEl.textContent = payout.toLocaleString();
+  }
+  priceEl?.addEventListener('input', recalc);
+
+  // 충전가능 토글
+  const topupAvailable = document.getElementById('topupAvailable');
+  const topupNone = document.getElementById('topupNone');
+  const minTopup = document.getElementById('minTopup');
+  function toggleTopup(){
+    const enable = topupAvailable.checked;
+    minTopup.disabled = !enable;
+    if(!enable){ minTopup.value = ''; }
+  }
+  topupAvailable?.addEventListener('change', toggleTopup);
+  topupNone?.addEventListener('change', toggleTopup);
+  toggleTopup();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!-- templates/wallet/success.html -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>충전 완료</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5 text-center">
+  <h2 class="mb-4">🎉 마일리지 충전 완료!</h2>
+  <p class="fs-4">
+    현재 마일리지: <span class="fw-bold text-primary"
+       th:text="${#numbers.formatInteger(balance, 0, 'COMMA')} + '원'">0원</span>
+  </p>
+  <a href="/charge" class="btn btn-primary mt-4">추가 충전하기</a>
+  <a href="/" class="btn btn-outline-secondary mt-4">홈으로</a>
+</div>
+</body>
+</html>

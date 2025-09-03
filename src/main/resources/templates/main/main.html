@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Pikolo - 게임 아이디 거래소</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/main.css}">
+<link rel="stylesheet" th:href="@{/css/common.css}">
+
+</head>
+<body>
+
+<!-- 상단 네비 -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container my-4">
+    <!-- 메인 배너 -->
+    <div class="main-banner">
+        <h2 class="fw-bold mb-3">게임 아이디 안전거래</h2>
+        <p class="text-muted mb-4">검증된 판매자와 안전한 에스크로 시스템으로 거래하세요</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/sell/register" class="btn btn-main">
+                <i class="fas fa-plus me-2"></i>아이디 판매
+            </a>
+            <a href="/buy/list" class="btn btn-outline-primary">
+                <i class="fas fa-search me-2"></i>아이디 구매
+            </a>
+        </div>
+    </div>
+
+    <!-- 통계 -->
+    <div class="stats-bar">
+        <div class="row">
+            <div class="col-3 stat-item">
+                <div class="stat-number">1,247</div>
+                <div class="stat-label">총 거래</div>
+            </div>
+            <div class="col-3 stat-item">
+                <div class="stat-number">342</div>
+                <div class="stat-label">판매중</div>
+            </div>
+            <div class="col-3 stat-item">
+                <div class="stat-number">98.2%</div>
+                <div class="stat-label">거래성공률</div>
+            </div>
+            <div class="col-3 stat-item">
+                <div class="stat-number">24분</div>
+                <div class="stat-label">평균거래시간</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 주요 서비스 -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="service-card text-center">
+                <div class="service-icon icon-sell mx-auto">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h6 class="fw-bold">판매등록</h6>
+                <p class="small text-muted mb-3">내 아이디 판매</p>
+                <a href="/sell/register" class="btn btn-main btn-sm">등록</a>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="service-card text-center">
+                <div class="service-icon icon-buy mx-auto">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h6 class="fw-bold">아이디구매</h6>
+                <p class="small text-muted mb-3">원하는 아이디 찾기</p>
+                <a href="/buy/list" class="btn btn-main btn-sm">구매</a>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="service-card text-center">
+                <div class="service-icon icon-mypage mx-auto">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h6 class="fw-bold">마이페이지</h6>
+                <p class="small text-muted mb-3">거래내역 관리</p>
+                <a href="/mypage" class="btn btn-main btn-sm">관리</a>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="service-card text-center">
+                <div class="service-icon icon-chat mx-auto">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h6 class="fw-bold">채팅</h6>
+                <p class="small text-muted mb-3">실시간 소통</p>
+                <a href="/chat/rooms" class="btn btn-main btn-sm">채팅</a>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="service-card text-center">
+                <div class="service-icon icon-charge mx-auto">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h6 class="fw-bold">충전</h6>
+                <p class="small text-muted mb-3">마일리지 충전</p>
+                <a href="/user/payment" class="btn btn-main btn-sm">충전</a>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="service-card text-center">
+                <div class="service-icon icon-withdraw mx-auto">
+                    <i class="fas fa-money-bill"></i>
+                </div>
+                <h6 class="fw-bold">출금</h6>
+                <p class="small text-muted mb-3">수익 출금신청</p>
+                <a href="/mileage/withdraw" class="btn btn-main btn-sm">출금</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 최근 거래 정보 -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="recent-section">
+                <div class="section-header">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    최근 거래완료
+                </div>
+                <div class="trade-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <span class="game-tag">LOL</span>
+                            <div class="mt-1 fw-bold">다이아몬드1 / 챔피언 다수보유</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price">150,000원</div>
+                            <div class="time">2분전</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="trade-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <span class="game-tag">로아</span>
+                            <div class="mt-1 fw-bold">1580 바드 / 각인완료</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price">85,000원</div>
+                            <div class="time">15분전</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="trade-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <span class="game-tag">발로</span>
+                            <div class="mt-1 fw-bold">다이아3 / 스킨다수</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price">120,000원</div>
+                            <div class="time">1시간전</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center p-2">
+                    <a href="/trade/completed" class="btn btn-outline-secondary btn-sm">더보기</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="recent-section">
+                <div class="section-header">
+                    <i class="fas fa-clock text-primary me-2"></i>
+                    신규 등록
+                </div>
+                <div class="trade-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <span class="game-tag">메이플</span>
+                            <div class="mt-1 fw-bold">280렙 아크메이지 / 유니온8000</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price">200,000원</div>
+                            <div class="time">방금전</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="trade-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <span class="game-tag">던파</span>
+                            <div class="mt-1 fw-bold">110렙 귀검사 / 풀강화</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price">90,000원</div>
+                            <div class="time">5분전</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="trade-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <span class="game-tag">오버워치</span>
+                            <div class="mt-1 fw-bold">그마 / 골든건 다수</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price">300,000원</div>
+                            <div class="time">10분전</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center p-2">
+                    <a href="/sell/list" class="btn btn-outline-secondary btn-sm">더보기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 인기 게임 -->
+    <div class="quick-links mt-4">
+        <h5 class="fw-bold mb-3">인기 게임</h5>
+        <div class="row g-2">
+            <div class="col-auto">
+                <a href="/game/lol" class="btn btn-outline-secondary btn-sm">리그오브레전드</a>
+            </div>
+            <div class="col-auto">
+                <a href="/game/lostark" class="btn btn-outline-secondary btn-sm">로스트아크</a>
+            </div>
+            <div class="col-auto">
+                <a href="/game/valorant" class="btn btn-outline-secondary btn-sm">발로란트</a>
+            </div>
+            <div class="col-auto">
+                <a href="/game/overwatch" class="btn btn-outline-secondary btn-sm">오버워치2</a>
+            </div>
+            <div class="col-auto">
+                <a href="/game/maple" class="btn btn-outline-secondary btn-sm">메이플스토리</a>
+            </div>
+            <div class="col-auto">
+                <a href="/game/dnf" class="btn btn-outline-secondary btn-sm">던전앤파이터</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 공지사항 -->
+    <div class="mt-4">
+        <div class="recent-section">
+            <div class="section-header">
+                <i class="fas fa-bullhorn text-warning me-2"></i>
+                공지사항
+            </div>
+            <div class="trade-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-bold">안전거래 에스크로 서비스 도입</div>
+                        <small class="text-muted">거래 안전성 강화를 위한 새로운 시스템</small>
+                    </div>
+                    <div class="text-end">
+                        <small class="time">2025.08.30</small>
+                        <div><a href="/notice/1" class="btn btn-outline-primary btn-sm">보기</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

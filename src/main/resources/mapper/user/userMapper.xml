@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="pikolo.user.UserMapper">
+  <insert id="registerUser" parameterType="UserDTO">
+  insert into app_user(
+  user_id,
+  password_hash,
+  user_email,
+  user_phone,
+  user_role,
+  birth_date,
+  user_name,
+  user_address,
+  user_bank_account,
+  user_bank
+  ) values(
+  #{userId},
+  #{passwordHash},
+  #{userEmail},
+  #{userPhone},
+  #{userRole},
+  #{birthDate},
+  #{userName},
+  #{userAddress},
+  #{userBankAccount},
+  #{bankName}
+  )
+  </insert>
+  <select id="searchInfoByUserId" parameterType="String" resultType="UserDTO">
+  select * from app_user where user_id=#{userId}
+  
+  </select>
+  
+  
+  </mapper>

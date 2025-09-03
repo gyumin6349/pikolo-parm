@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>마이페이지</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <style>
+    body{background:#f5f7fb}
+    .layout{max-width:1200px;margin:24px auto}
+    /* Sidebar */
+    .sidebar{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;position:sticky;top:16px}
+    .badge-tier{display:flex;align-items:center;gap:10px;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:16px}
+    .menu h6{font-weight:800;margin:12px 0 8px}
+    .menu a{display:block;padding:8px 10px;border-radius:8px;color:#374151;text-decoration:none}
+    .menu a:hover{background:#f3f6ff}
+    .menu a.active{background:#1e40af;color:#fff}
+
+    /* Cards Top */
+    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+    .sum-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:center;min-height:130px}
+    .sum-card .title{color:#6b7280;font-weight:700}
+    .sum-card .value{font-size:2rem;font-weight:900}
+    .sum-card .actions a{font-weight:800;text-decoration:none;margin-right:10px}
+
+    /* Sections */
+    .panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px}
+    .section-title{font-weight:900;margin-bottom:10px}
+
+    /* Step tiles */
+    .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem}
+    .step{border-radius:12px;padding:14px 10px;color:#fff;text-align:center}
+    .step .tag{display:inline-block;background:rgba(255,255,255,.25);border-radius:999px;padding:2px 10px;font-weight:800;margin-bottom:6px}
+    .step .name{opacity:.95}
+    .step .cnt{font-size:1.6rem;font-weight:900}
+    .step.blue{background:#175fe6}
+    .step.green{background:#16a34a}
+    .step a{color:#fff;text-decoration:none}
+    @media (max-width:992px){.summary{grid-template-columns:1fr}.steps{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:576px){.steps{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="layout container">
+  <div class="row g-3">
+    <!-- Sidebar -->
+    <aside class="col-12 col-lg-3">
+      <div class="sidebar">
+
+        <nav class="menu">
+          <h6>나의 판매 물품</h6>
+          <a th:href="@{/mypage/sell/list}">내가 등록한 물품</a>
+          <a th:href="@{/mypage/sell/pending}">결제 대기중</a>
+          <a th:href="@{/mypage/sell/onsale}">판매중</a>
+          <a th:href="@{/mypage/sell/canceling}">판매 취소중</a>
+          <a th:href="@{/mypage/sell/canceled}">판매 취소완료</a>
+          <a th:href="@{/mypage/sell/done}">판매 완료</a>
+
+          <div class="mt-2"></div>
+          <h6>나의 구매 물품</h6>
+          <a th:href="@{/mypage/buy/list}">내가 등록한 물품</a>
+          <a th:href="@{/mypage/buy/pending}">결제 대기중</a>
+          <a th:href="@{/mypage/buy/ongoing}">구매중</a>
+          <a th:href="@{/mypage/buy/canceling}">구매 취소중</a>
+          <a th:href="@{/mypage/buy/canceled}">구매 취소완료</a>
+          <a th:href="@{/mypage/buy/done}">구매 완료</a>
+
+          <div class="mt-2"></div>
+          <h6>마일리지 관리</h6>
+          <a th:href="@{/mileage/history}">마일리지 내역</a>
+          <a th:href="@{/mileage/charge}">마일리지 충전</a>
+          <a th:href="@{/mileage/withdraw}">마일리지 출금</a>
+
+          <div class="mt-2"></div>
+          <h6>나의 정보관리</h6>
+          <a th:href="@{/user/confirm_pass}">회원정보 수정</a>
+          <a th:href="@{/wishlist}">관심 물품</a>
+          <a th:href="@{/account/resign}">회원 탈퇴</a>
+          <a th:href="@{/account/pin/reset}">핀번호 재설정</a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="col-12 col-lg-9">
+      <!-- Top summary -->
+      <div class="summary mb-3">
+        <div class="sum-card">
+          <div class="title">내 보유 마일리지</div>
+<!--           <div class="value" th:text="${#numbers.formatInteger(user.mileage, 3, 'COMMA')} + '원'">1,000원</div> -->
+          <div class="actions mt-1">
+            <a th:href="@{/mileage/charge}" class="text-primary">충전</a>
+            <a th:href="@{/mileage/withdraw}" class="text-primary">출금</a>
+          </div>
+        </div>
+        <div class="sum-card">
+          <div class="title">내 보유 쿠폰</div>
+<!--           <div class="value" th:text="${couponCount != null ? couponCount + '개' : '오픈예정'}">오픈예정</div> -->
+        </div>
+        <div class="sum-card">
+          <div class="title">관심 물품</div>
+<!--           <div class="value" th:text="${#numbers.formatInteger(wishlistCount,0)} + '개'">0개</div> -->
+        </div>
+      </div>
+
+      <!-- 거래 현황 -->
+      <div class="panel mb-3">
+        <div class="section-title">· 거래 현황</div>
+
+        <div class="mb-2 fw-bold text-primary">판매 현황</div>
+<!--         <div class="steps mb-3"> -->
+<!--           <a class="step blue" th:href="@{/mypage/sell/list}"> -->
+<!--             <div class="tag">STEP1</div><div class="name">판매 등록</div> -->
+<!--             <div class="cnt" th:text="${sell.step1} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step blue" th:href="@{/mypage/sell/pending}"> -->
+<!--             <div class="tag">STEP2</div><div class="name">결제 대기중</div> -->
+<!--             <div class="cnt" th:text="${sell.step2} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step blue" th:href="@{/mypage/sell/onsale}"> -->
+<!--             <div class="tag">STEP3</div><div class="name">판매중</div> -->
+<!--             <div class="cnt" th:text="${sell.step3} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step blue" th:href="@{/mypage/sell/canceling}"> -->
+<!--             <div class="tag">STEP4</div><div class="name">판매 취소중</div> -->
+<!--             <div class="cnt" th:text="${sell.step4} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step blue" th:href="@{/mypage/sell/canceled}"> -->
+<!--             <div class="tag">STEP5</div><div class="name">판매 취소완료</div> -->
+<!--             <div class="cnt" th:text="${sell.step5} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step blue" th:href="@{/mypage/sell/done}"> -->
+<!--             <div class="tag">STEP6</div><div class="name">판매 완료</div> -->
+<!--             <div class="cnt" th:text="${sell.step6} + '건'">0건</div> -->
+<!--           </a> -->
+<!--         </div> -->
+
+        <div class="mb-2 fw-bold text-success">구매 현황</div>
+<!--         <div class="steps"> -->
+<!--           <a class="step green" th:href="@{/mypage/buy/list}"> -->
+<!--             <div class="tag">STEP1</div><div class="name">구매 등록</div> -->
+<!--             <div class="cnt" th:text="${buy.step1} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step green" th:href="@{/mypage/buy/pending}"> -->
+<!--             <div class="tag">STEP2</div><div class="name">결제 대기중</div> -->
+<!--             <div class="cnt" th:text="${buy.step2} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step green" th:href="@{/mypage/buy/ongoing}"> -->
+<!--             <div class="tag">STEP3</div><div class="name">구매중</div> -->
+<!--             <div class="cnt" th:text="${buy.step3} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step green" th:href="@{/mypage/buy/canceling}"> -->
+<!--             <div class="tag">STEP4</div><div class="name">구매 취소중</div> -->
+<!--             <div class="cnt" th:text="${buy.step4} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step green" th:href="@{/mypage/buy/canceled}"> -->
+<!--             <div class="tag">STEP5</div><div class="name">구매 취소완료</div> -->
+<!--             <div class="cnt" th:text="${buy.step5} + '건'">0건</div> -->
+<!--           </a> -->
+<!--           <a class="step green" th:href="@{/mypage/buy/done}"> -->
+<!--             <div class="tag">STEP6</div><div class="name">구매 완료</div> -->
+<!--             <div class="cnt" th:text="${buy.step6} + '건'">0건</div> -->
+<!--           </a> -->
+<!--         </div> -->
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>
